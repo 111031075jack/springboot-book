@@ -1,0 +1,38 @@
+package com.example.demo.config;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import com.example.demo.model.dto.BookDTO;
+import com.example.demo.model.entity.Book;
+
+//import org.springframework.context.annotation.Scope;
+
+@Configuration
+public class ModelMapperConfig {	
+	@Bean
+	//@Scope("singleton") // 每次呼叫都使用同一個物件(預設)
+	//@Scope("prototype") // 每次呼叫都會產生一個新的物件
+	
+	ModelMapper modelMapper() {
+		ModelMapper modelMapper = new ModelMapper();
+		// Entity 轉 DTO
+		modelMapper.typeMap(Book.class, BookDTO.class).addMappings(mapper -> {
+			mapper.map(Book::getTitle, BookDTO::setName);
+			mapper.map(Book::getStock, BookDTO::setAmount);
+			mapper.map(Book::getPublished, BookDTO::setPub);
+			
+		});
+		
+		// DTO 轉 ENTITY
+		modelMapper.typeMap(BookDTO.class, Book.class).addMappings(mapper -> {
+			mapper.map(BookDTO::getName, Book::setTitle);
+			mapper.map(BookDTO::getAmount, Book::setStock);
+			mapper.map(BookDTO::getPub, Book::setPublished);
+			
+		});
+		
+		return modelMapper;
+	}
+	
+}
