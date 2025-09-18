@@ -10,7 +10,7 @@ public interface BookService {
 	List<BookDTO> findAllBooks();
 	
 	// 查詢單筆書籍
-	BookDTO findBookById(Integer id);
+	BookDTO findBookById(Integer id) throws BookNotFoundException;
 	
 	// 新增書籍
 	BookDTO addBook(BookDTO bookDTO);
