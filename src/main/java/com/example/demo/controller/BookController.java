@@ -1,9 +1,17 @@
 package com.example.demo.controller;
 
+import java.util.List;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.exception.BookNotFoundException;
+import com.example.demo.model.dto.BookDTO;
+import com.example.demo.model.entity.Book;
+import com.example.demo.response.ApiResponse;
 import com.example.demo.service.BookService;
 
 /**
@@ -19,15 +27,31 @@ import com.example.demo.service.BookService;
 @RestController
 @RequestMapping("/api")
 public class BookController {
+
+    private final ModelMapper modelMapper;
 	
 	@Autowired
 	private BookService bookService;
+
+    BookController(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 	
+	@GetMapping(value = "/books", produces = "application/json;charset=utf-8")
+	public ApiResponse<List<BookDTO>> getAllBooks(){
+		List<BookDTO> bookDTOs = bookService.findAllBooks();
+		return new ApiResponse<>(true, bookDTOs, "多筆查詢成功"); 
+	}
 	
-	
-	
-	
-	
+	@GetMapping(value = "/book/{id}", produces = "application/json;charset=utf-8")
+	public ApiResponse<BookDTO> getBookById(@PathVariable Integer id){
+		try {
+			BookDTO bookDTO = bookService.findBookById(id);
+			return new ApiResponse<>(true, bookDTO, "單筆查詢成功"); 
+		}catch(BookNotFoundException e){
+			return new ApiResponse<>(false, null, e.getMessage()); 
+		}
+	}
 	
 	
 	
