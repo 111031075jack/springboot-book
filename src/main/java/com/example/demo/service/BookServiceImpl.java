@@ -23,8 +23,12 @@ public class BookServiceImpl implements BookService{
 	
 	@Override
 	public List<BookDTO> findAllBooks() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Book> books = bookDao.findAll();
+		// 逐筆轉 Book 轉 BookDTO
+		List<BookDTO> bookDTOs= books.stream()
+				.map(book -> modelMapper.map(book, BookDTO.class))
+				.toList();
+		return bookDTOs;
 	}
 
 	@Override
@@ -33,28 +37,41 @@ public class BookServiceImpl implements BookService{
 		if(optbook.isEmpty()) {
 			throw new BookNotFoundException("查無書籍, id=" + id);
 		}
-		// 取得 book 物件
+		// 1.取得 book 物件
 		Book book = optbook.get();
-		// book 轉 BookDTO
+		// 2.Book 轉 BookDTO
 		BookDTO bookDTO = modelMapper.map(book, BookDTO.class);
 		return bookDTO;
 	}
 
 	@Override
 	public BookDTO addBook(BookDTO bookDTO) {
-		// TODO Auto-generated method stub
-		return null;
+		// BookDTO 轉 Book
+		Book book = modelMapper.map(bookDTO, Book.class);
+		// 新增
+		bookDao.save(book);
+		return bookDTO;
 	}
 
 	@Override
 	public BookDTO updateBook(Integer id, BookDTO bookDTO) throws BookNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		// 1.確認是否有該筆資料(若無此書籍會拋出例外)
+		findBookById(id);
+		// 2.id 注入到 bookDTO 中
+		bookDTO.setId(id);
+		// 3.BookDTO 轉 Book
+		Book book = modelMapper.map(bookDTO, Book.class);
+		// 4.修改
+		bookDao.update(book);
+		return bookDTO;
 	}
 
 	@Override
 	public void deleteBook(Integer id) throws BookNotFoundException {
-		// TODO Auto-generated method stub
+		// 1.確認是否有該筆資料(若無此書籍會拋出例外)
+		findBookById(id);
+		// 2.刪除
+		bookDao.deleteById(id);
 		
 	}
 
