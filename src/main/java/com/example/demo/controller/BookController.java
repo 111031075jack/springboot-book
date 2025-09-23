@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.exception.BookNotFoundException;
 import com.example.demo.model.dto.BookDTO;
-import com.example.demo.model.entity.Book;
 import com.example.demo.response.ApiResponse;
 import com.example.demo.service.BookService;
 
@@ -30,8 +30,9 @@ import com.example.demo.service.BookService;
 	
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(value = {"http://localhost:5173"})
 public class BookController {
-
+	
     private final ModelMapper modelMapper;
 	
 	@Autowired
